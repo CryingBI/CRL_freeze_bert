@@ -74,7 +74,7 @@ class Manager(object):
             #     {'params': [p for n, p in parameters_to_optimize
             #                 if any(nd in n for nd in no_decay)], 'weight_decay': 0.0, 'lr': lr}
             # ]
-            parameters_to_optimize = list(filter(lambda p: p[1].required_grad, parameters_to_optimize))
+            parameters_to_optimize = list(filter(lambda p: p[1].requires_grad, parameters_to_optimize))
             return parameters_to_optimize
         params = set_param(encoder, args.learning_rate)
 
