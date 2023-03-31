@@ -11,7 +11,7 @@ class Bert_Encoder(nn.Module):
         # load model
         self.encoder = BertModel.from_pretrained(config.bert_path).cuda()
         self.bert_config = BertConfig.from_pretrained(config.bert_path)
-
+        #print(self.encoder)
         # the dimension for the final outputs
         self.output_size = config.encoder_output_size
         self.out_dim = self.output_size
@@ -29,6 +29,11 @@ class Bert_Encoder(nn.Module):
             self.linear_transform = nn.Linear(self.bert_config.hidden_size, self.output_size, bias=True)
 
         self.layer_normalization = nn.LayerNorm([self.output_size])
+
+        for param in self.encoder.parameters():
+            param.require_grad = False
+        for param in self.linear_transform.parameters():
+            param.require_grad = False
 
 
     def get_output_size(self):
