@@ -68,13 +68,14 @@ class Manager(object):
         def set_param(module, lr, decay=0):
             parameters_to_optimize = list(module.named_parameters())
             no_decay = ['undecay']
-            # parameters_to_optimize = [
-            #     {'params': [p for n, p in parameters_to_optimize
-            #                 if not any(nd in n for nd in no_decay)], 'weight_decay': 0.0, 'lr': lr},
-            #     {'params': [p for n, p in parameters_to_optimize
-            #                 if any(nd in n for nd in no_decay)], 'weight_decay': 0.0, 'lr': lr}
-            # ]
             parameters_to_optimize = list(filter(lambda p: p[1].requires_grad, parameters_to_optimize))
+            parameters_to_optimize = [
+                {'params': [p for n, p in parameters_to_optimize
+                            if not any(nd in n for nd in no_decay)], 'weight_decay': 0.0, 'lr': lr},
+                {'params': [p for n, p in parameters_to_optimize
+                            if any(nd in n for nd in no_decay)], 'weight_decay': 0.0, 'lr': lr}
+            ]
+            
             return parameters_to_optimize
         params = set_param(encoder, args.learning_rate)
 
