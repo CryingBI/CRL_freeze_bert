@@ -30,10 +30,10 @@ class Bert_Encoder(nn.Module):
 
         self.layer_normalization = nn.LayerNorm([self.output_size])
 
-        for param in self.encoder.parameters():
+        for param in self.encoder.encoder.parameters():
             param.requires_grad = False
-        for param in self.linear_transform.parameters():
-            param.requires_grad = False
+        # for param in self.linear_transform.parameters():
+        #     param.requires_grad = False
 
 
     def get_output_size(self):
