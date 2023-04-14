@@ -11,6 +11,8 @@ import random
 from tqdm import tqdm, trange
 from sklearn.cluster import KMeans
 from .utils import osdist
+
+hidden_list = []
 class Manager(object):
     def __init__(self, args):
         super().__init__()
@@ -102,6 +104,8 @@ class Manager(object):
                 labels = labels.to(args.device)
                 tokens = torch.stack([x.to(args.device) for x in tokens], dim=0)
                 hidden, reps = encoder.bert_forward(tokens)
+                print(hidden)
+                hidden_list.append(hidden)
                 loss = self.moment.loss(reps, labels)
                 losses.append(loss.item())
                 td.set_postfix(loss = np.array(losses).mean())
@@ -255,11 +259,14 @@ class Manager(object):
                 for relation in current_relations:
                     history_relation.append(relation)
                     train_data_for_initial += training_data[relation]
+                print(len(train_data_for_initial))
                 # train model
                 # no memory. first train with current task
                 self.moment = Moment(args)
                 self.moment.init_moment(args, encoder, train_data_for_initial, is_memory=False)
                 self.train_simple_model(args, encoder, train_data_for_initial, args.step1_epochs)
+
+                print(hidden_list)
 
                 # repaly
                 if len(memorized_samples)>0:
